@@ -14,7 +14,7 @@ def login():
     if request.method == "POST":
         uid = request.form["uid"]
         upass = request.form["upass"]
-
+        print(uid,upass)
         return render_template("admin.html",uid = uid)
     else:
         return render_template("login.html")
