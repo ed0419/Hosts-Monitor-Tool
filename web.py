@@ -3,8 +3,6 @@ import json
 app = Flask(__name__,static_folder='static/')
 
 @app.route('/')
-def main(){
+def main():
     render_template("done_color.html")
-}
 
-@app.route("/login")
