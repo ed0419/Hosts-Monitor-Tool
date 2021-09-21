@@ -4,5 +4,9 @@ app = Flask(__name__,static_folder='static/')
 
 @app.route('/')
 def main():
-    render_template("done_color.html")
+    render_template("body.html")
 
+@app.route('/login',methods=["POST","GET"])
+def login():
+   if request.method == "POST":
+       
