@@ -44,6 +44,7 @@ def login():
         upass = request.form["upass"]
         conn = sqlite3.connect('test.db')
         c = conn.cursor()
+        print(uid,upass)
         try:
             cursor = c.execute("SELECT PASSWORD from SYS_USERS where USER='{}'".format(uid))
             result = list(cursor)[0][0]
@@ -53,7 +54,8 @@ def login():
                 session['login_uid'] = uid
                 return redirect("admin")
             else:
-                return redirect("login")
+                print("Error")
+                return render_template("login.html",errorMsg="錯誤的使用者帳號密碼")
         except:
             return render_template("login.html",errorMsg="錯誤的使用者帳號密碼")
     else:
