@@ -1,7 +1,11 @@
 from datetime import timedelta
-import re, sqlite3
-from flask import Flask, request,  render_template, redirect, session
+import re, sqlite3, json
+from flask import Flask, request,  render_template, redirect, session, Response
+from flask_cors import CORS
+
 app = Flask(__name__,static_folder='static/')
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 app.config.update(
 TESTING=True,
 SECRET_KEY=b'_5#y2L"F4Q8z\n\xec]/',
@@ -19,7 +23,14 @@ SESSION_COOKIE_NAME="WHATDOUWANT",
 #         SALARY         REAL);''')
 #     conn.commit()
 #     conn.close()
-
+@app.route("/api/test")
+def test():
+    t = {
+        'a': 1,
+        'b': 2,
+        'c': [3, 4, 5]
+    }
+    return Response(json.dumps(t), mimetype='application/json')
 
 # 重導
 @app.route('/')
