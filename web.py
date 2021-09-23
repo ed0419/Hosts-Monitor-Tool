@@ -23,6 +23,7 @@ SESSION_COOKIE_NAME="WHATDOUWANT",
 #         SALARY         REAL);''')
 #     conn.commit()
 #     conn.close()
+print("HI")
 @app.route("/api/test")
 def test():
     t = {
