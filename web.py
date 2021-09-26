@@ -1,5 +1,5 @@
 from datetime import timedelta
-import re, sqlite3, json
+import re, sqlite3, json, requests
 from flask import Flask, request,  render_template, redirect, session, Response
 from flask_cors import CORS
 
@@ -25,12 +25,13 @@ SESSION_COOKIE_NAME="WHATDOUWANT",
 #     conn.close()
 @app.route("/api/test")
 def test():
-    t = {
-        'a': 1,
-        'b': 2,
-        'c': [3, 4, 5]
-    }
-    return Response(json.dumps(t), mimetype='application/json')
+    r = requests.get("http://103.122.190.111:30120/players.json").json()
+    ping_avg = []
+    for i in r:
+        ping_avg.append(i['ping'])
+    return str(sum(ping_avg)/len(r))
+    #return Response(json.dumps(r, ensure_ascii=False).encode('utf8'), mimetype='application/json')
+
 
 # 重導
 @app.route('/')
@@ -77,7 +78,11 @@ def login():
 def admin():
         try:
             if session['login'] == 1:
-                return render_template("admin.html",uid=session["login_uid"])
+                r = requests.get("http://103.122.190.111:30120/players.json").json()
+                ping_avg = []
+                for i in r:
+                    ping_avg.append(i['ping'])
+                return render_template("admin.html",uid=session["login_uid"],ping_avg=str(sum(ping_avg)/len(r)))
             else:
                 return redirect("login")
         except:
