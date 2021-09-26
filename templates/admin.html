@@ -1,70 +1,77 @@
+<!DOCTYPE html>
+<html>
 <head>
-    <link rel="icon" href="static/favicon.ico">
-    <meta http-equiv="refresh" content="20">
-    <title>監控系統登入介面</title>
-    <style>
-        .grid {
-        display: grid;
-        grid-template-columns: 150px auto;
-        grid-template-rows: 70px minmax(280px, auto) auto;
-        grid-template-areas: 
-            'header header'
-            'leftbar main'
-            'footer footer';
-        column-gap: 20px;
-        row-gap: 20px;
-        }
+  <title>監控系統登入介面</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="icon" href="static/favicon.ico">
+<meta http-equiv="refresh" content="5">
 
-        .page-header {
-        grid-area: header;
-        }
+<style type="text/css">
+    main {
+        margin-top: 1rem;
+    }
 
-        .page-leftbar {
-        grid-area: leftbar;
-        }
+    .schlussel code {
+        filter: blur(5px);
+    }
 
-        .page-main {
-        grid-area: main;
-        }
-
-        .page-footer {
-        grid-area: footer;
-        }
-
-        .content {
-        color: #242424;
-        background-color: #5d5d5d;
-        font-weight: 600;
-        text-align: center;
-        box-sizing: border-box;
-        height: 100%;
-        padding: 10px;
-        }
-    </style>
+    .schlussel:hover code {
+        filter: none;
+    }
+</style>
 </head>
 <body>
-<div class="grid">
-    <header class="page-header">
-      <div class="content">
-        <h3>Hi, {{uid}} 歡迎來到監控面板<a href="/logout">登出</a></h3>
-        
-      </div>
-    </header>
-    <aside class="page-leftbar">
-      <div class="content">
-        <p>TWE3主機</p>
-        <p>TWE5主機</p>
-      </div>
-    </aside>
-    <main class="page-main">
-      <div class="content">
-        <p>Main</p>
-      </div>
-    </main>
-    <footer class="page-footer">
-      <div class="content">
-        <p>Footer</p>
-      </div>
-    </footer>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <a class="navbar-brand" href="/">FiveM 看門狗</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            監控台
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">
+                            新增主機
+                        </a>
+                    </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="/logout">
+                            登出
+                        </a>
+                    </li>
+                </ul>
+            </div>
+    </nav>
+
+<main class="section">
+  <div class="container">  
+    <p>歡迎, <strong>{{uid}}</strong>!</p>
+    <p>您目前擁有 <strong>{{1}}</strong> 台主機.</p>
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>No.</th>
+          <th>IP</th>
+          <th>主機名稱</th>
+          <th>RP名稱</th>
+          <th>人數</th>
+          <th>平均延遲</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{html|safe}}
+      </tbody>
+    </table>
   </div>
+</main>
+
 </body>
+</html>

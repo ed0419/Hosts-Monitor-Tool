@@ -29,9 +29,35 @@ def test():
     ping_avg = []
     for i in r:
         ping_avg.append(i['ping'])
-    return str(sum(ping_avg)/len(r))
+    return render_template("admin.html")
     #return Response(json.dumps(r, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-
+@app.route("/test")
+def testa():
+    try:
+        ip = "103.122.190.111"
+        port = "30120"
+        server_id = "1"
+        r_player = requests.get(f"http://{ip}:{port}/players.json").json()
+        r_info = requests.get(f"http://{ip}:{port}/info.json").json()
+        name = "FL20"
+        hostname = r_info['vars']['sv_projectDesc']
+        players = len(r_player)
+        ping = []
+        for i in r_player:
+            ping.append(i['ping'])
+        ping_avg = str(sum(ping)/len(r_player))
+        html =f' \
+            <tr> \
+                <td>{server_id}</td>\
+                <td><a href="/server/1">{ip}</a></td>\
+                <td>{name}</td>\
+                <td class="hostname">{hostname}</td>\
+                <td>{players}</td>\
+                <td>{ping_avg}</td>\
+            </tr> '
+    except:
+        return "Error"
+    return render_template("admin.html",html=html)
 
 # 重導
 @app.route('/')
