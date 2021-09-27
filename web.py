@@ -95,7 +95,14 @@ def login():
             return render_template("login.html",errorMsg="錯誤的使用者帳號密碼")
     else:
         return render_template("login.html",errorMsg=" ")
-
+@app.route("/new")
+def newhost():
+    try:
+        if session['login'] == 1:
+            uid=session['uid']
+        return render_template("new.html")
+    except:
+        return redirect("/admin")
 # 管理頁面
 @app.route('/admin')
 def admin():
