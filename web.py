@@ -1,5 +1,5 @@
 from datetime import timedelta
-import re, sqlite3, json, requests
+import re, pymysql, json, requests
 from flask import Flask, request,  render_template, redirect, session, Response
 from flask_cors import CORS
 
@@ -12,17 +12,7 @@ SECRET_KEY=b'_5#y2L"F4Q8z\n\xec]/',
 SESSION_COOKIE_NAME="WHATDOUWANT",
 #SESSION_COOKIE_DOMAIN=""
 )
-# def init_sqlite():
-#     conn = sqlite3.connect('test.db')
-#     c = conn.cursor()
-#     c.execute('''CREATE TABLE SYS_USERS
-#         (ID INT PRIMARY KEY     NOT NULL,
-#         NAME           TEXT    NOT NULL,
-#         USER            INT     NOT NULL,
-#         PASSWORD        CHAR(50),
-#         SALARY         REAL);''')
-#     conn.commit()
-#     conn.close()
+
 @app.route("/api/test")
 def test():
     r = requests.get("http://103.122.190.111:30120/players.json").json()
@@ -34,12 +24,19 @@ def test():
 @app.route("/test")
 def testa():
     try:
-        ip = "103.122.190.111"
-        port = "30120"
-        server_id = "1"
+        db = pymysql.connect(host="192.168.88.34",user="hmt",passwd="12345678",database="hmt_data")
+        cursor = db.cursor()
+        uid=session["login_uid"]
+        cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
+        results = cursor.fetchall()
+        for row in results:
+            server_id = row[0]
+            name = row[1]
+            ip = row[2]
+            port = row[3]
+        print(ip,port)
         r_player = requests.get(f"http://{ip}:{port}/players.json").json()
         r_info = requests.get(f"http://{ip}:{port}/info.json").json()
-        name = "FL20"
         hostname = r_info['vars']['sv_projectDesc']
         players = len(r_player)
         ping = []
@@ -80,11 +77,11 @@ def login():
     if request.method == "POST":
         uid = request.form["uid"]
         upass = request.form["upass"]
-        conn = sqlite3.connect('test.db')
-        c = conn.cursor()
+        db = pymysql.connect(host="192.168.88.34",user="hmt",passwd="12345678",database="hmt_data")
+        cursor = db.cursor()
         print(uid,upass)
         try:
-            cursor = c.execute("SELECT PASSWORD from SYS_USERS where USER='{}'".format(uid))
+            cursor.execute("SELECT PASSWORD from SYS_USERS where USER='{}'".format(uid))
             result = list(cursor)[0][0]
             print(result)
             if upass == result:
@@ -104,11 +101,35 @@ def login():
 def admin():
         try:
             if session['login'] == 1:
-                r = requests.get("http://103.122.190.111:30120/players.json").json()
-                ping_avg = []
-                for i in r:
-                    ping_avg.append(i['ping'])
-                return render_template("admin.html",uid=session["login_uid"],ping_avg=str(sum(ping_avg)/len(r)))
+                db = pymysql.connect(host="192.168.88.34",user="hmt",passwd="12345678",database="hmt_data")
+                cursor = db.cursor()
+                uid=session["login_uid"]
+                cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
+                results = cursor.fetchall()
+                for row in results:
+                    server_id = row[0]
+                    name = row[1]
+                    ip = row[2]
+                    port = row[3]
+                print(ip,port)
+                r_player = requests.get(f"http://{ip}:{port}/players.json").json()
+                r_info = requests.get(f"http://{ip}:{port}/info.json").json()
+                hostname = r_info['vars']['sv_projectDesc']
+                players = len(r_player)
+                ping = []
+                for i in r_player:
+                    ping.append(i['ping'])
+                ping_avg = str(sum(ping)/len(r_player))
+                html =f' \
+                    <tr> \
+                        <td>{server_id}</td>\
+                        <td><a href="/server/1">{ip}</a></td>\
+                        <td>{name}</td>\
+                        <td class="hostname">{hostname}</td>\
+                        <td>{players}</td>\
+                        <td>{ping_avg}</td>\
+                    </tr> '
+                return render_template("admin.html",html=html,uid=uid)
             else:
                 return redirect("login")
         except:
