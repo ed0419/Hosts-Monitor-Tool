@@ -9,10 +9,11 @@ cursor = db.cursor()
 uid = "admin"
 cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
 results = cursor.fetchall()
-for row in results:
-    server_id = row[0]
-    name = row[1]
-    ip = row[2]
-    port = row[3]
-print(server_id,name,ip,port)
-print(requests.get(f"http://{ip}:{port}/players.json").json())
+print(results)
+for i in range(len(results)):
+  server_id = results[i][0]
+  name = results[i][1]
+  ip = results[i][2]
+  port = results[i][3]
+  print(server_id,name,ip,port)
+#print(requests.get(f"http://{ip}:{port}/players.json").json())
