@@ -53,19 +53,22 @@
 <!-- top -->
 <main class="section">
   <div class="container">  
-    <p>歡迎, <strong>{{uid}}</strong>!</p>
-    <p>您目前擁有 <strong>{{1}}</strong> 台主機.</p>
+    <p>歡迎, <strong>{{uid}}</strong>, 您可以在這裡欲監控的主機.</p>
+    <p>您目前擁有 <strong>{{host_count}}</strong> 台主機.</p>
     <!-- 主機資料 -->
     <table class="table table-striped">
       <thead class="thead-dark">
-        <tr>
-          <th>No.</th>
-          <th>IP</th>
-          <th>主機名稱</th>
-          <th>RP名稱</th>
-          <th>人數</th>
-          <th>平均延遲</th>
-        </tr>
+        <form class="box" action="/new" method="post">
+            <h3>主機名稱</h3>
+            <input type="text" name="Hname" placeholder="RP之城" required>
+            <h3>IP</h3>
+            <input type="text" name="Hip" placeholder="127.0.0.1" required>
+            <h3>PORT</h3>
+            <input type="text" name="Hport" placeholder="30120" required>
+              <p></p>
+            <input type="submit" name="" value="繳交" >
+            <h3><font color = "red">{{errorMsg}}</font></h3>
+          </form>
       </thead>
       <tbody>
         {{html|safe}}

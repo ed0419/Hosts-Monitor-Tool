@@ -7,13 +7,10 @@ except pymysql.Error as e:
   print("DB Failed"+str(e))
 cursor = db.cursor()
 uid = "admin"
-cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
+name = "local"
+ip = "127.0.0.1"
+port = "30120"
+cursor.execute(f"INSERT INTO SYS_HOSTS (OWNEDBY, NAME, IP, PORT) VALUES ('{uid}','{name}','{ip}','{port}')")
+db.commit()
 results = cursor.fetchall()
 print(results)
-for i in range(len(results)):
-  server_id = results[i][0]
-  name = results[i][1]
-  ip = results[i][2]
-  port = results[i][3]
-  print(server_id,name,ip,port)
-#print(requests.get(f"http://{ip}:{port}/players.json").json())

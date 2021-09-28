@@ -2,13 +2,14 @@ from datetime import timedelta
 import re, pymysql, json, requests
 from flask import Flask, request,  render_template, redirect, session, Response
 from flask_cors import CORS
+from requests.api import post
 
 app = Flask(__name__,static_folder='static/')
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.config.update(
 TESTING=True,
-SECRET_KEY=b'_5#y2L"F4Q8z\n\xec]/',
+SECRET_KEY=b'eere43443d',
 SESSION_COOKIE_NAME="WHATDOUWANT",
 #SESSION_COOKIE_DOMAIN=""
 )
@@ -21,40 +22,6 @@ def test():
         ping_avg.append(i['ping'])
     return render_template("admin.html")
     #return Response(json.dumps(r, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-@app.route("/test")
-def testa():
-    try:
-        db = pymysql.connect(host="192.168.88.34",user="hmt",passwd="12345678",database="hmt_data")
-        cursor = db.cursor()
-        uid=session["login_uid"]
-        cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
-        results = cursor.fetchall()
-        for row in results:
-            server_id = row[0]
-            name = row[1]
-            ip = row[2]
-            port = row[3]
-        print(ip,port)
-        r_player = requests.get(f"http://{ip}:{port}/players.json").json()
-        r_info = requests.get(f"http://{ip}:{port}/info.json").json()
-        hostname = r_info['vars']['sv_projectDesc']
-        players = len(r_player)
-        ping = []
-        for i in r_player:
-            ping.append(i['ping'])
-        ping_avg = str(sum(ping)/len(r_player))
-        html =f' \
-            <tr> \
-                <td>{server_id}</td>\
-                <td><a href="/server/1">{ip}</a></td>\
-                <td>{name}</td>\
-                <td class="hostname">{hostname}</td>\
-                <td>{players}</td>\
-                <td>{ping_avg}</td>\
-            </tr> '
-    except:
-        return "Error"
-    return render_template("admin.html",html=html)
 
 # 重導
 @app.route('/')
@@ -74,6 +41,8 @@ def login():
         session['login'] = 0
     if 'login_uid' not in session:
         session['login_uid'] = "OR 1=1"
+    if session['login'] == 1:
+        return redirect("/admin")
     if request.method == "POST":
         uid = request.form["uid"]
         upass = request.form["upass"]
@@ -95,17 +64,26 @@ def login():
             return render_template("login.html",errorMsg="錯誤的使用者帳號密碼")
     else:
         return render_template("login.html",errorMsg=" ")
-@app.route("/new")
+@app.route("/new",methods=["POST","GET"])
 def newhost():
     try:
         if session['login'] == 1:
-            uid=session['uid']
-        return render_template("new.html")
+                if request.method == post:
+                    uid = session['uid']
+                    Hname = request.form["Hname"]
+                    Hip = request.form["Hip"]
+                    Hport = request.form["Hport"]
+                    db = pymysql.connect(host="192.168.88.34",user="hmt",passwd="12345678",database="hmt_data")
+                    cursor = db.cursor()
+                    cursor.execute(f"INSERT INTO SYS_HOSTS (OWNEDBY, NAME, IP, PORT) VALUES ('{uid}','{Hname}','{Hip}','{Hport}')")
+                else:
+                    return render_template("new.html")
     except:
         return redirect("/admin")
 # 管理頁面
 @app.route('/admin')
 def admin():
+
         try:
             if session['login'] == 1:
                 uid=session["login_uid"]
@@ -116,6 +94,7 @@ def admin():
                 cursor = db.cursor()
                 cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
                 results = cursor.fetchall()
+
                 for i in range(len(results)):
                     server_id = results[i][0]
                     name = results[i][1]
@@ -123,14 +102,16 @@ def admin():
                     port = results[i][3]
                     print(server_id,name,ip,port)
                     try:
-                        r_player = requests.get(f"http://{ip}:{port}/players.json", timeout=10).json()
-                        r_info = requests.get(f"http://{ip}:{port}/info.json", timeout=10).json()
+                        r_player = requests.get(f"http://{ip}:{port}/players.json", timeout=5).json()
+                        r_info = requests.get(f"http://{ip}:{port}/info.json", timeout=5).json()
                         hostname = r_info['vars']['sv_projectDesc']
                         players = len(r_player)
                         ping = []
+
                         for i in r_player:
                             ping.append(i['ping'])
-                        ping_avg = str(sum(ping)/len(r_player))
+                        ping_avg = str(round(sum(ping)/len(r_player),2))
+
                         html +=f' \
                             <tr> \
                                 <td>{server_id}</td>\
