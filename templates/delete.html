@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <!-- integrity check (integrity="[hash]-[value]") -->
 <link rel="icon" href="static/favicon.ico">
-<meta http-equiv="refresh" content="5">
+<meta http-equiv="refresh" content="30">
 
 <style type="text/css">
     main {
@@ -44,7 +44,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/new">
+                        <a class="nav-link" href="/delete">
                             刪除主機
                         </a>
                     </li>
@@ -59,8 +59,8 @@
 <!-- top -->
 <main class="section">
   <div class="container">  
-    <p>歡迎, <strong>{{uid}}</strong>!</p>
-    <p>您目前擁有 <strong>{{host_count}}</strong> 台主機. 有 <strong>{{faild_count}}</strong> 台主機離線</p>
+    <p>歡迎, <strong>{{uid}}</strong>, 您可以在這裡刪除欲監控的主機.</p>
+    <br>
     <!-- 主機資料 -->
     <table class="table table-striped">
       <thead class="thead-dark">
@@ -68,8 +68,7 @@
           <th>No.</th>
           <th>IP</th>
           <th>主機名稱</th>
-          <th>RP名稱</th>
-          <th>確認刪除</th>
+          <th>刪除</th>
         </tr>
       </thead>
       <tbody>
