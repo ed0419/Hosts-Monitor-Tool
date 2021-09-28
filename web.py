@@ -192,8 +192,8 @@ def admin():
                 port = results[i][3]
                 print(server_id,name,ip,port)
                 try:
-                    r_player = requests.get(f"http://{ip}:{port}/players.json", timeout=2).json()
-                    r_info = requests.get(f"http://{ip}:{port}/DYNAMIC.json", timeout=2).json()
+                    r_player = requests.get(f"http://{ip}:{port}/players.json", timeout=1).json()
+                    r_info = requests.get(f"http://{ip}:{port}/DYNAMIC.json", timeout=1).json()
                     hostname = r_info['hostname']
                     players = len(r_player)
                     print(hostname)
@@ -242,8 +242,6 @@ def admin():
                             <td>{name}</td>\
                             <td class="hostname">Offline</td>\
                         </tr>'
-                        print("************************")
-                        print(failed_html)
                     print("Cant Fetch",server_id,name,ip,port,e)
             return render_template("admin.html",html=html,uid=uid,host_count=len(results),faild_count=faild_count,faild_html=failed_html,offlineMsg=offlineMsg)
         else:
