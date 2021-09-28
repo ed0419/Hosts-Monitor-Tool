@@ -119,8 +119,32 @@ def delete_host():
     try:
         if session['login'] == 1:
             uid=session["login_uid"]
+            html = ""
+            #SQL CONN
+            db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
+            cursor = db.cursor()
+            cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
+            results = cursor.fetchall()
+            print(results)
+            for i in range(len(results)):
+                server_id = results[i][0]
+                name = results[i][1]
+                ip = results[i][2]
+                port = results[i][3]
+                print(server_id,name,ip,port)
+                html +=f' \
+                    <tr> \
+                        <td>{server_id}</td>\
+                        <td><a href="/server/{ip}">{ip}</a></td>\
+                        <td class="hostname">{name}</td>\
+                        <td><form action="/delete/?ip={ip}" method="POST"><a type=">確認刪除</a></td>\
+                    </tr> '
+            
+            return render_template("delete.html",uid=uid,html=html)
+        else:
+            return redirect("/admin")
     except:
-        return redirect("/admin")
+        return render_template("delete.html",uid=uid,html=html)
 
 # 管理頁面
 @app.route('/admin')
