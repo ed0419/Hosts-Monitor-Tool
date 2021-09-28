@@ -191,28 +191,32 @@ def admin():
                 port = results[i][3]
                 print(server_id,name,ip,port)
                 try:
-                    r_player = requests.get(f"http://{ip}:{port}/players.json", timeout=5).json()
-                    r_info = requests.get(f"http://{ip}:{port}/info.json", timeout=5).json()
-                    hostname = r_info['vars']['sv_projectDesc']
+                    r_player = requests.get(f"http://{ip}:{port}/players.json", timeout=2).json()
+                    r_info = requests.get(f"http://{ip}:{port}/DYNAMIC.json", timeout=2).json()
+                    hostname = r_info['hostname']
                     players = len(r_player)
+                    print(hostname)
                     ping = []
 
                     for i in r_player:
                         ping.append(i['ping'])
-                    ping_avg = str(round(sum(ping)/len(r_player),2))
+                    if sum(ping) <= 0:
+                        ping_avg = -1
+                    else:
+                        ping_avg = str(round(sum(ping)/len(r_player),2))
 
                     html +=f' \
                         <tr> \
                             <td>{server_id}</td>\
-                            <td><a href="/server/1">{ip}</a></td>\
+                            <td><a href="http://{ip}:{port}/">{ip}</a></td>\
                             <td>{name}</td>\
                             <td class="hostname">{hostname}</td>\
                             <td>{players}</td>\
                             <td>{ping_avg}</td>\
                         </tr> '
-                except:
+                except Exception as e:
                     faild_count += 1
-                    print("Cant Fetch",server_id,name,ip,port)
+                    print("Cant Fetch",server_id,name,ip,port,e)
             return render_template("admin.html",html=html,uid=uid,host_count=len(results),faild_count=faild_count)
         else:
             return redirect("login")
