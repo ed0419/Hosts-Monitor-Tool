@@ -167,6 +167,7 @@ def delete_host():
 # 管理頁面
 @app.route('/admin')
 def admin():
+    failed_html = ""
     if 'login' not in session:
         session['login'] = 0
     if 'login_uid' not in session:
@@ -208,7 +209,7 @@ def admin():
                     html +=f' \
                         <tr> \
                             <td>{server_id}</td>\
-                            <td><a href="http://{ip}:{port}/">{ip}</a></td>\
+                            <td><a href="http://{ip}:{port}/ ">{ip}</a></td>\
                             <td>{name}</td>\
                             <td class="hostname">{hostname}</td>\
                             <td>{players}</td>\
@@ -216,8 +217,35 @@ def admin():
                         </tr> '
                 except Exception as e:
                     faild_count += 1
+                    offlineMsg= '<h3 class="h5 mb-3 font-weight-normal">離線主機</h3>'
+                    if faild_count == 1:
+                        failed_html +=f' \
+                        <tr>\
+                        <th>No.</th>\
+                        <th>IP</th>\
+                        <th>主機名稱</th>\
+                        <th>RP名稱</th>\
+                        </tr></thead>'
+                        failed_html +=f' \
+                        <tbody> \
+                        <tr> \
+                            <td>{server_id}</td>\
+                            <td><a href="http://{ip}:{port}/ ">{ip}</a></td>\
+                            <td>{name}</td>\
+                            <td class="hostname">Offline</td>\
+                        </tr>'
+                    else:
+                        failed_html +=f' \
+                        <tr> \
+                            <td>{server_id}</td>\
+                            <td><a href="http://{ip}:{port}/ ">{ip}</a></td>\
+                            <td>{name}</td>\
+                            <td class="hostname">Offline</td>\
+                        </tr>'
+                        print("************************")
+                        print(failed_html)
                     print("Cant Fetch",server_id,name,ip,port,e)
-            return render_template("admin.html",html=html,uid=uid,host_count=len(results),faild_count=faild_count)
+            return render_template("admin.html",html=html,uid=uid,host_count=len(results),faild_count=faild_count,faild_html=failed_html,offlineMsg=offlineMsg)
         else:
             return redirect("login")
     except pymysql.Error as e:

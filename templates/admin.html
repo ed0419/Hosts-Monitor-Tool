@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <!-- integrity check (integrity="[hash]-[value]") -->
 <link rel="icon" href="static/favicon.ico">
-<meta http-equiv="refresh" content="30">
+<meta http-equiv="refresh" content="180">
 
 <style type="text/css">
     main {
@@ -62,6 +62,7 @@
     <p>歡迎, <strong>{{uid}}</strong>!</p>
     <p>您目前擁有 <strong>{{host_count}}</strong> 台主機. 有 <strong>{{faild_count}}</strong> 台主機離線</p>
     <!-- 主機資料 -->
+    <h3 class="h5 mb-3 font-weight-normal">運作中的主機</h3>
     <table class="table table-striped">
       <thead class="thead-dark">
         <tr>
@@ -75,6 +76,12 @@
       </thead>
       <tbody>
         {{html|safe}}
+      </tbody>
+    </table>
+    {{offlineMsg|safe}}
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        {{faild_html|safe}}
       </tbody>
     </table>
   </div>
