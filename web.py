@@ -15,15 +15,6 @@ SESSION_COOKIE_NAME="WHATDOUWANT",
 #SESSION_COOKIE_DOMAIN=""
 )
 
-@app.route("/api/test")
-def test():
-    r = requests.get("http://103.122.190.111:30120/players.json").json()
-    ping_avg = []
-    for i in r:
-        ping_avg.append(i['ping'])
-    return render_template("admin.html")
-    #return Response(json.dumps(r, ensure_ascii=False).encode('utf8'), mimetype='application/json')
-
 # 重導
 @app.route('/')
 def main():
