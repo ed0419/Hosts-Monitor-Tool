@@ -45,7 +45,8 @@ def login():
         cursor = db.cursor()
         print(uid,upass)
         try:
-            cursor.execute("SELECT PASSWORD from SYS_USERS where USER='{}'".format(uid))
+            #cursor.execute("SELECT PASSWORD from SYS_USERS where USER='{}'".format(uid))
+            cursor.execute("SELECT PASSWORD from SYS_USERS where USER=%(uid)s",{'uid':uid})
             result = list(cursor)[0][0]
             print(result)
             if upass == result:
@@ -87,7 +88,8 @@ def newhost():
             try:
                 db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
                 cursor = db.cursor()
-                cursor.execute(f"INSERT INTO SYS_HOSTS (OWNEDBY, NAME, IP, PORT) VALUES ('{uid}','{hname}','{ok_hip}','{ok_hport}')")
+                #cursor.execute(f"INSERT INTO SYS_HOSTS (OWNEDBY, NAME, IP, PORT) VALUES ('{uid}','{hname}','{ok_hip}','{ok_hport}')")
+                cursor.execute("INSERT INTO SYS_HOSTS (OWNEDBY, NAME, IP, PORT) VALUES (%(uid)s,%(hname)s,%(ok_hip)s,%(ok_hport)s)",{'uid':uid, 'hname':hname, 'ok_hip':ok_hip, 'ok_hport':ok_hport})
                 db.commit()
                 return '<script>alert("成功")</script><meta http-equiv="refresh" content="0; url=".">'
             except:
@@ -116,7 +118,8 @@ def delete_host():
                 #SQL CONN
                 db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
                 cursor = db.cursor()
-                cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
+                #cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
+                cursor.execute("SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY=%(uid)s", {'uid':uid})
                 results = cursor.fetchall()
                 print(results)
                 for i in range(len(results)):
@@ -144,7 +147,8 @@ def delete_host():
                 #SQL CONN
                 db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
                 cursor = db.cursor()
-                cursor.execute(f"DELETE FROM SYS_HOSTS WHERE IP='{delete_ip}'")
+                #cursor.execute(f"DELETE FROM SYS_HOSTS WHERE IP='{delete_ip}'")
+                cursor.execute("DELETE FROM SYS_HOSTS WHERE IP=%(delete_ip)s",{'delete_ip':delete_ip})
                 db.commit()
                 return '<script>alert("成功")</script><meta http-equiv="refresh" content="0; url=".">'
             else:
@@ -173,7 +177,10 @@ def admin():
             #SQL CONN
             db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
             cursor = db.cursor()
-            cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
+            # OLD
+            #cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
+            # NEW
+            cursor.execute("SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY=%(uid)s",{'uid':uid})
             results = cursor.fetchall()
 
             for i in range(len(results)):
