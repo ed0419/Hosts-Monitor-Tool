@@ -1,5 +1,4 @@
-import re
-import pymysql,requests
+import pymysql
 try:
   db = pymysql.connect(host="192.168.88.34",user="hmt",passwd="12345678",database="hmt_data")
   print("OK")
