@@ -39,7 +39,7 @@ def login():
     if request.method == "POST":
         uid = request.form["uid"]
         upass = request.form["upass"]
-        db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
+        db = pymysql.connect(host="gg60.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
         cursor = db.cursor()
         print(uid,upass)
         try:
@@ -83,7 +83,7 @@ def newhost():
             else:
                 print("SQLi Dectected!",hport)
             try:
-                db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
+                db = pymysql.connect(host="gg60.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
                 cursor = db.cursor()
                 cursor.execute("INSERT INTO SYS_HOSTS (OWNEDBY, NAME, IP, PORT) VALUES (%(uid)s,%(hname)s,%(ok_hip)s,%(ok_hport)s)",{'uid':uid, 'hname':hname, 'ok_hip':ok_hip, 'ok_hport':ok_hport})
                 db.commit()
@@ -112,7 +112,7 @@ def delete_host():
                 uid=session["login_uid"]
                 html = ""
                 #SQL CONN
-                db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
+                db = pymysql.connect(host="gg60.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
                 cursor = db.cursor()
                 #cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
                 cursor.execute("SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY=%(uid)s", {'uid':uid})
@@ -141,7 +141,7 @@ def delete_host():
                 delete_ip = request.form['hip']
                 print(delete_ip)
                 #SQL CONN
-                db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
+                db = pymysql.connect(host="gg60.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
                 cursor = db.cursor()
                 #cursor.execute(f"DELETE FROM SYS_HOSTS WHERE IP='{delete_ip}'")
                 cursor.execute("DELETE FROM SYS_HOSTS WHERE IP=%(delete_ip)s",{'delete_ip':delete_ip})
@@ -171,7 +171,7 @@ def admin():
             faild_count = 0
             html = ""
             #SQL CONN
-            db = pymysql.connect(host="oapw.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
+            db = pymysql.connect(host="gg60.mc2021.net",user="hmt",passwd="12345678",database="hmt_data")
             cursor = db.cursor()
             # OLD
             #cursor.execute(f"SELECT SERVER_ID, NAME, IP, PORT from SYS_HOSTS where OWNEDBY='{uid}'")
